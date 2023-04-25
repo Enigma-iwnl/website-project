@@ -30,7 +30,7 @@ const schema = new mongoose.Schema({
 const Customer = mongoose.model('Person', schema)
 
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {//testing
     Customer.find((err, customers)=> {
         console.log("Customers: ", customers)
         res.json(customers)
@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 }
 )
 
-app.post("/post",(req, res) => {
+app.post("/post",(req, res) => {//Post Req, make new customer
 
     console.log("POSTING: ")
 
@@ -54,6 +54,28 @@ app.post("/post",(req, res) => {
     })
 
 })
+
+
+app.put("/update/:id", (req, res) => { //Put req, find a customer and update their record
+    Customer.findByIdAndUpdate(req.params.id, {
+        name : req.body.name,
+        ticketNumber : req.body.ticketNumber,
+        address : req.body.address,
+        date : req.body.date
+    }, { new: true }, (err, customer) => {
+        if (err) return res.status(500).send(err);
+        return res.send(customer);
+    });
+})
+
+app.delete("/delete/:id", (req, res) => {
+    Customer.findByIdAndRemove(req.params.id, (err, customer) => {
+        if (err) return res.status(500).send(err);
+        return res.send(customer);
+    });
+});
+
+
 
 app.listen(port, ()=>{
     console.log(`Listening on port: ${port}`)
